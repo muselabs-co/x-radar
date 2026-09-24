@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "X Radar - 社交关系与粉丝洞察助手",
-  "version": "1.1.0",
-  "description": "一键扫描探测 X (Twitter) 未回关账号、单向粉丝、双向互关，并实时记录新关注与取关变动历史。支持原生侧栏模式与弹窗模式自适应切换。",
+  "name": "X Radar",
+  "version": "1.1.1",
+  "description": "See who doesn't follow you back, one-way fans, and mutuals on X. Track follower changes locally.",
   "permissions": [
     "storage",
     "cookies",
