@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "X Radar - 社交关系与粉丝洞察助手",
+  "version": "1.1.0",
+  "description": "一键扫描探测 X (Twitter) 未回关账号、单向粉丝、双向互关，并实时记录新关注与取关变动历史。支持原生侧栏模式与弹窗模式自适应切换。",
+  "permissions": [
+    "storage",
+    "cookies",
+    "sidePanel",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.x.com/*",
+    "https://*.twitter.com/*",
+    "https://abs.twimg.com/*"
+  ],
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "X Radar",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "popup/popup.html?view=sidepanel"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.x.com/*",
+        "https://*.twitter.com/*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

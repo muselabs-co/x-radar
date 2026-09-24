@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="doc.title">X Radar</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="radar-logo-wrapper">
+          <img src="../icons/icon48.png" alt="X Radar" class="radar-logo">
+          <span class="radar-ping"></span>
+        </div>
+        <div>
+          <div class="title-row">
+            <h1 class="brand-title">X Radar</h1>
+            <button type="button" id="display-mode-badge" class="display-mode-badge">
+              <span id="mode-label" class="mode-label">Side</span>
+              <span id="mode-hover-label" class="mode-hover-label">Switch to popup</span>
+            </button>
+          </div>
+          <span class="brand-subtitle" data-i18n="brand.subtitle">Relationship radar</span>
+        </div>
+      </div>
+      <label class="lang-select">
+        <select id="lang-select" aria-label="Language"></select>
+      </label>
+    </header>
+
+    <!-- Quick Filter Bar: Dual Filter Switches -->
+    <section class="quick-filter-bar">
+      <div class="quick-filter-item">
+        <div class="quick-filter-switch-row">
+          <label class="quick-filter-label" for="switch-noback-me" data-i18n="filter.notFollowingBack">Not following back</label>
+          <label class="xradar-switch">
+            <input type="checkbox" id="switch-noback-me">
+            <span class="xradar-slider"></span>
+          </label>
+        </div>
+        <button type="button" id="label-noback-me" class="quick-filter-link" data-i18n="filter.openFollowing">Open following</button>
+      </div>
+
+      <div class="quick-filter-divider"></div>
+
+      <div class="quick-filter-item">
+        <div class="quick-filter-switch-row">
+          <label class="quick-filter-label" for="switch-i-noback" data-i18n="filter.notFollowedBack">Not followed back</label>
+          <label class="xradar-switch">
+            <input type="checkbox" id="switch-i-noback">
+            <span class="xradar-slider"></span>
+          </label>
+        </div>
+        <button type="button" id="label-i-noback" class="quick-filter-link" data-i18n="filter.openFollowers">Open followers</button>
+      </div>
+    </section>
+
+    <!-- Section Divider for Radar Scan Area (Collapsible) -->
+    <div class="section-divider" id="radar-section-toggle">
+      <div class="section-divider-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/></svg>
+        <span data-i18n="section.scan">Deep scan</span>
+        <svg id="radar-toggle-chevron" class="toggle-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-divider-right">
+        <span id="last-sync-time" class="section-divider-meta">Not synced</span>
+        <button id="btn-clear" class="btn-clear-cache">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span data-i18n="action.clear">Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Radar Content Area (All content below the divider) -->
+    <div id="radar-collapsible-area" class="radar-collapsible-area is-collapsed" style="display: none;">
+      <!-- Profile & Radar Scan Controller Card -->
+      <section class="radar-card" id="radar-scan-card">
+      <div class="profile-row">
+        <img id="user-avatar" class="user-avatar" src="" alt="Avatar" style="display: none;">
+        <div class="user-info">
+          <span id="user-name" class="user-name">Loading account...</span>
+          <span id="user-handle" class="user-handle">@...</span>
+        </div>
+        <div class="profile-stats">
+          <span class="stat-pill"><span data-i18n="stat.following">Following</span> <b id="stat-following">-</b></span>
+          <span class="stat-pill"><span data-i18n="stat.followers">Followers</span> <b id="stat-followers">-</b></span>
+        </div>
+      </div>
+
+      <p class="scan-limit-note" data-i18n="scan.limitWarning">If following plus followers is over 10,000, do not use radar scan.</p>
+
+      <!-- Scan Actions -->
+      <div class="scan-actions-row">
+        <button id="btn-sync" class="btn btn-primary btn-scan" type="button">
+          <span id="btn-sync-text">Start scan</span>
+        </button>
+        <button id="btn-radar-info" class="scan-info-link" type="button" data-i18n="action.info">About</button>
+      </div>
+
+      <!-- Radar Info Card (Collapsible Explanation Panel) -->
+      <div id="radar-info-card" class="radar-info-card" style="display: none;">
+        <div class="radar-info-header">
+          <div class="radar-info-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span data-i18n="info.title">About deep scan</span>
+          </div>
+          <button id="btn-close-radar-info" class="btn-close-info">✕</button>
+        </div>
+
+        <div class="radar-info-body">
+          <div class="info-section">
+            <div class="info-subtitle" data-i18n="info.features">What it does</div>
+            <ul class="info-list">
+              <li><b data-i18n="info.feature1Title">Full relationship scan</b><span data-i18n="info.feature1Body">Builds a local copy of who you follow and who follows you.</span></li>
+              <li><b data-i18n="info.feature2Title">Sorted lists</b><span data-i18n="info.feature2Body">Splits people into not following back, one-way fans, and mutuals.</span></li>
+              <li><b data-i18n="info.feature3Title">Change history</b><span data-i18n="info.feature3Body">Compares scans and records new followers and unfollows.</span></li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <div class="info-subtitle" data-i18n="info.notes">Good to know</div>
+            <ul class="info-list">
+              <li><b data-i18n="info.note1Title">No password</b><span data-i18n="info.note1Body">Uses the X login already in this browser. No password or key is asked.</span></li>
+              <li><b data-i18n="info.note2Title">Rate-limit guard</b><span data-i18n="info.note2Body">Reads in small batches. Large accounts take longer on purpose.</span></li>
+              <li><b data-i18n="info.note3Title">Stays on this device</b><span data-i18n="info.note3Body">Lists and history stay in this browser and are not uploaded.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scanning Progress & Overall Countdown -->
+      <div id="progress-container" class="progress-container" style="display: none;">
+        <div class="progress-header">
+          <span id="progress-status-text" class="progress-status">Scanning...</span>
+          <span id="progress-countdown" class="progress-countdown" style="display: none;">⏱️ 预计总剩余: ~--秒</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Not Logged In Banner -->
+    <div id="login-alert" class="alert-box alert-warning" style="display: none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div class="alert-content">
+        <p data-i18n="login.body">No X login found in this browser. Sign in to X, then come back.</p>
+        <a href="https://x.com" target="_blank" class="link-btn" data-i18n="login.link">Open X.com</a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-item active" data-tab="notFollowingBack">
+        <span class="tab-label" data-i18n="tab.notFollowingBack">No back</span>
+        <span id="badge-not-following" class="tab-badge badge-red">0</span>
+      </button>
+      <button class="tab-item" data-tab="fansNotFollowed">
+        <span class="tab-label" data-i18n="tab.fans">Fans</span>
+        <span id="badge-fans" class="tab-badge badge-blue">0</span>
+      </button>
+      <button class="tab-item" data-tab="mutuals">
+        <span class="tab-label" data-i18n="tab.mutuals">Mutual</span>
+        <span id="badge-mutuals" class="tab-badge badge-green">0</span>
+      </button>
+      <button class="tab-item" data-tab="timeline">
+        <span class="tab-label" data-i18n="tab.timeline">History</span>
+        <span id="badge-timeline" class="tab-badge badge-neutral">0</span>
+      </button>
+    </nav>
+
+    <!-- Main List Container -->
+    <main class="list-container">
+      <div id="user-list" class="user-list">
+        <!-- User cards dynamically populated here -->
+      </div>
+
+      <!-- Timeline list -->
+      <div id="timeline-list" class="timeline-list" style="display: none;">
+        <!-- Timeline items dynamically populated here -->
+      </div>
+
+      <!-- Empty State View -->
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">📡</div>
+        <p class="empty-title">No scan yet</p>
+        <p class="empty-desc">Use the switches above to filter the page, or start a scan for a full local list and unfollow history.</p>
+      </div>
+    </main>
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
